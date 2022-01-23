@@ -1,0 +1,8 @@
+[package]
+name = "next_semver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { version = "0.11" }
+tokio = { version = "1.15", features = ["full"] }
