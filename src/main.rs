@@ -1,5 +1,4 @@
 use ::std::fmt;
-use std::path::Prefix;
 
 use ::rocket::Build;
 use ::rocket::get;
@@ -11,6 +10,7 @@ use ::semver::Version;
 use rocket::response::status;
 
 use ::next_semver::Part;
+use next_semver::bump;
 
 #[derive(Debug, Clone, Copy)]
 pub enum BumpPart {
@@ -19,12 +19,12 @@ pub enum BumpPart {
     Patch,
 }
 
-impl From<Part> for BumpPart {
-    fn from(part: Part) -> Self {
+impl From<BumpPart> for Part {
+    fn from(part: BumpPart) -> Self {
         match part {
-            Part::Major => BumpPart::Major,
-            Part::Minor => BumpPart::Minor,
-            Part::Patch => BumpPart::Patch,
+            BumpPart::Major => Part::Major,
+            BumpPart::Minor => Part::Minor,
+            BumpPart::Patch => Part::Patch,
         }
     }
 }
@@ -47,9 +47,9 @@ pub struct BumpVersion {
     version: Version,
 }
 
-impl From<Version> for BumpVersion {
-    fn from(version: Version) -> Self {
-        BumpVersion { version }
+impl From<BumpVersion> for Version {
+    fn from(version: BumpVersion) -> Self {
+        version.version
     }
 }
 
@@ -74,9 +74,9 @@ pub struct PrefixBumpVersion {
     version: Version,
 }
 
-impl From<Version> for PrefixBumpVersion {
-    fn from(version: Version) -> Self {
-        PrefixBumpVersion { version }
+impl From<PrefixBumpVersion> for Version {
+    fn from(version: PrefixBumpVersion) -> Self {
+        version.version
     }
 }
 
@@ -95,12 +95,12 @@ impl<'a> FromParam<'a> for PrefixBumpVersion {
 
 #[get("/<part>/<version>", rank = 1)]
 fn next(part: BumpPart, version: BumpVersion) -> String {
-    version.to_string()
+    bump(&version.into(), part.into()).to_string()
 }
 
 #[get("/<part>/<version>", rank = 2)]
 fn next_prefix(part: BumpPart, version: PrefixBumpVersion) -> String {
-    version.to_string()
+    bump(&version.into(), part.into()).to_string()
 }
 
 #[get("/<part>/<version>", rank = 3)]
