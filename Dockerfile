@@ -14,7 +14,7 @@ RUN cargo --offline fmt --all -- --check
 # Build (for release)
 RUN find . -name target -prune -o -type f &&\
     touch -c build.rs src/main.rs src/lib.rs &&\
-    cargo --offline build --bin "$BIN" --release --locked
+    cargo --offline build --bin "$BIN" --all-features --release --locked
 
 # Copy executable
 RUN find . -wholename "*/target/*" -name "$BIN" -type f -executable -print -exec cp {} /"$BIN" \; &&\

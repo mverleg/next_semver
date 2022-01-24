@@ -1,5 +1,4 @@
-.idea/
-.git/
-target/
-ci/
-.github/
+*
+!Cargo.toml
+!Cargo.lock
+!src/
