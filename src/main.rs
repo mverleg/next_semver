@@ -4,6 +4,7 @@ use ::rocket::launch;
 use ::rocket::request::FromParam;
 use ::rocket::Rocket;
 use ::rocket::routes;
+use ::rocket::catch;
 use ::semver::Version;
 
 use ::next_semver::Part;
@@ -60,11 +61,25 @@ impl<'a> FromParam<'a> for BumpVersion {
 }
 
 #[get("/<part>/<version>")]
-fn hello(part: BumpPart, version: &str) -> String {
-    "Hello, world!".to_owned()
+fn next(part: BumpPart, version: BumpVersion) -> String {
+    version.to_string()
+}
+
+#[get("/<part>/<version>")]
+fn cannot_parse(part: &str, version: &str) -> String {
+    "not found".to_owned()
+}
+
+#[catch(default)]
+fn fallback() -> String {
+    "not found".to_owned()
 }
 
 #[launch]
 fn rocket() -> Rocket<Build> {
-    rocket::build().mount("/", routes![hello])
+    rocket::build().mount("/", routes![
+        next,
+        cannot_parse,
+        fallback,
+    ])
 }
