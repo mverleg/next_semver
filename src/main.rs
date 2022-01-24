@@ -1,10 +1,13 @@
+use ::std::fmt;
+
 use ::rocket::Build;
 use ::rocket::get;
+use ::rocket::http::Status;
 use ::rocket::launch;
+use ::rocket::Request;
 use ::rocket::request::FromParam;
 use ::rocket::Rocket;
 use ::rocket::routes;
-use ::rocket::catch;
 use ::semver::Version;
 
 use ::next_semver::Part;
@@ -50,6 +53,12 @@ impl From<Version> for BumpVersion {
     }
 }
 
+impl fmt::Display for BumpVersion {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.version)
+    }
+}
+
 impl<'a> FromParam<'a> for BumpVersion {
     type Error = ();
 
@@ -66,20 +75,32 @@ fn next(part: BumpPart, version: BumpVersion) -> String {
 }
 
 #[get("/<part>/<version>")]
-fn cannot_parse(part: &str, version: &str) -> String {
-    "not found".to_owned()
+fn part_err(part: &str, version: BumpVersion) -> String {
+    format!("cannot parse part (first part of path): '{}' should be one of 'major', 'minor' or 'patch'", part)
 }
 
-#[catch(default)]
-fn fallback() -> String {
-    "not found".to_owned()
+#[get("/<part>/<version>")]
+fn version_err(part: &str, version: &str) -> String {
+    format!("cannot parse version (second part of path): '{}' should be a semver, e.g. '1.2.4'", version)
+}
+
+#[get("/<first>")]
+fn missing_part(first: &str) -> String {
+    format!("found only one path part ('{}'), expected two parts, e.g. /major/1.2.4 or /patch/0.2.0", version)
+}
+
+#[get("/")]
+fn fallback(status: Status, request: &Request) -> String {
+    format!("did not find bump and version in path, expected e.g. /major/1.2.4 or /patch/0.2.0")
 }
 
 #[launch]
 fn rocket() -> Rocket<Build> {
     rocket::build().mount("/", routes![
         next,
-        cannot_parse,
+        part_err,
+        version_err,
+        missing_part,
         fallback,
     ])
 }
