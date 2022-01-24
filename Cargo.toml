@@ -17,4 +17,4 @@ web = ["rocket"]
 
 [dependencies]
 rocket = { version = "0.5.0-rc.1", optional = true }
-
+semver = "1.0.4"
