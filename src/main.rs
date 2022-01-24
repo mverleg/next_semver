@@ -4,13 +4,17 @@ use ::rocket::Build;
 use ::rocket::get;
 use ::rocket::launch;
 use ::rocket::request::FromParam;
+use ::rocket::response::status;
 use ::rocket::Rocket;
 use ::rocket::routes;
 use ::semver::Version;
-use rocket::response::status;
 
+use ::next_semver::bump;
 use ::next_semver::Part;
-use next_semver::bump;
+
+#[cfg(feature = "jemalloc")]
+#[global_allocator]
+static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 
 #[derive(Debug, Clone, Copy)]
 pub enum BumpPart {
