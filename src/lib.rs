@@ -8,4 +8,5 @@ pub enum Part {
 }
 
 pub fn bump(version: &Version, part: Part) -> Version {
+    unimplemented!()
 }

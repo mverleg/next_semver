@@ -15,6 +15,16 @@ pub enum BumpPart {
     Patch,
 }
 
+impl From<Part> for BumpPart {
+    fn from(part: Part) -> Self {
+        match part {
+            Part::Major => BumpPart::Major,
+            Part::Minor => BumpPart::Minor,
+            Part::Patch => BumpPart::Patch,
+        }
+    }
+}
+
 impl<'a> FromParam<'a> for BumpPart {
     type Error = ();
 
@@ -28,15 +38,23 @@ impl<'a> FromParam<'a> for BumpPart {
     }
 }
 
-impl<'a> FromParam<'a> for BumpPart {
+#[derive(Debug, Clone)]
+pub struct BumpVersion {
+    version: Version,
+}
+
+impl From<Version> for BumpVersion {
+    fn from(version: Version) -> Self {
+        BumpVersion { version }
+    }
+}
+
+impl<'a> FromParam<'a> for BumpVersion {
     type Error = ();
 
     fn from_param(param: &'a str) -> Result<Self, Self::Error> {
-        Ok(match param {
-             "ma" | "major" | "breaking" => BumpPart::Major,
-             "mi" | "minor" | "feature" => BumpPart::Minor,
-             "pa" | "patch" | "fix" => BumpPart::Patch,
-            _ => return Err(()),
+        Ok(BumpVersion {
+            version: Version::parse(param).map_err(|_| ())?,
         })
     }
 }
