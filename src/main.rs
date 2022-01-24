@@ -1,14 +1,14 @@
 use ::std::fmt;
+use std::path::Prefix;
 
 use ::rocket::Build;
 use ::rocket::get;
-use ::rocket::http::Status;
 use ::rocket::launch;
-use ::rocket::Request;
 use ::rocket::request::FromParam;
 use ::rocket::Rocket;
 use ::rocket::routes;
 use ::semver::Version;
+use rocket::response::status;
 
 use ::next_semver::Part;
 
@@ -69,35 +69,69 @@ impl<'a> FromParam<'a> for BumpVersion {
     }
 }
 
-#[get("/<part>/<version>")]
+#[derive(Debug, Clone)]
+pub struct PrefixBumpVersion {
+    version: Version,
+}
+
+impl From<Version> for PrefixBumpVersion {
+    fn from(version: Version) -> Self {
+        PrefixBumpVersion { version }
+    }
+}
+
+impl<'a> FromParam<'a> for PrefixBumpVersion {
+    type Error = ();
+
+    fn from_param(param: &'a str) -> Result<Self, Self::Error> {
+        if ! param.starts_with('v') {
+            return Err(())
+        };
+        Ok(PrefixBumpVersion {
+            version: Version::parse(&param[1..]).map_err(|_| ())?,
+        })
+    }
+}
+
+#[get("/<part>/<version>", rank = 1)]
 fn next(part: BumpPart, version: BumpVersion) -> String {
     version.to_string()
 }
 
-#[get("/<part>/<version>")]
-fn part_err(part: &str, version: BumpVersion) -> String {
-    format!("cannot parse part (first part of path): '{}' should be one of 'major', 'minor' or 'patch'", part)
+#[get("/<part>/<version>", rank = 2)]
+fn next_prefix(part: BumpPart, version: PrefixBumpVersion) -> String {
+    version.to_string()
 }
 
-#[get("/<part>/<version>")]
-fn version_err(part: &str, version: &str) -> String {
-    format!("cannot parse version (second part of path): '{}' should be a semver, e.g. '1.2.4'", version)
+#[get("/<part>/<version>", rank = 3)]
+fn part_err(part: &str, version: BumpVersion) -> status::BadRequest<String> {
+    status::BadRequest(Some(format!("cannot parse part (first part of path): '{}' \
+        should be one of 'major', 'minor' or 'patch'", part)))
 }
 
-#[get("/<first>")]
-fn missing_part(first: &str) -> String {
-    format!("found only one path part ('{}'), expected two parts, e.g. /major/1.2.4 or /patch/0.2.0", version)
+#[get("/<part>/<version>", rank = 4)]
+fn version_err(part: &str, version: &str) -> status::BadRequest<String> {
+    status::BadRequest(Some(format!("cannot parse version (second part of path): '{}' \
+        should be a semver, e.g. '1.2.4'", version)))
+}
+
+#[get("/<param>")]
+fn missing_part(param: &str) -> status::BadRequest<String> {
+    status::BadRequest(Some(format!("found only one path part ('{}'), expected two \
+        parts, e.g. /major/1.2.4 or /patch/0.2.0", param)))
 }
 
 #[get("/")]
-fn fallback(status: Status, request: &Request) -> String {
-    format!("did not find bump and version in path, expected e.g. /major/1.2.4 or /patch/0.2.0")
+fn fallback() -> status::BadRequest<String> {
+    status::BadRequest(Some(format!("did not find bump and version in path, expected \
+        e.g. /major/1.2.4 or /patch/0.2.0")))
 }
 
 #[launch]
 fn rocket() -> Rocket<Build> {
     rocket::build().mount("/", routes![
         next,
+        next_prefix,
         part_err,
         version_err,
         missing_part,
