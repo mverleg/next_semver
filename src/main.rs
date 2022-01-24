@@ -2,9 +2,9 @@ use ::rocket::routes;
 use ::rocket::Rocket;
 use ::rocket::Build;
 
-#[get("/")]
-fn hello() -> &'static str {
-    "Hello, world!"
+#[get("/<part>/<version>")]
+fn hello(part: &str, version: &str) -> String {
+    "Hello, world!".to_owned()
 }
 
 #[launch]
