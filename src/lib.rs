@@ -41,6 +41,30 @@ mod tests {
     use super::*;
 
     #[test]
+    fn bump_major() {
+        assert_eq!(v("1.0.0"), bump(v("0.1.2"), Part::Major));
+        assert_eq!(v("3.0.0"), bump(v("2.2.2"), Part::Major));
+    }
+
+    #[test]
+    fn bump_minor() {
+        assert_eq!(v("0.2.0"), bump(v("0.1.2"), Part::Minor));
+        assert_eq!(v("2.3.0"), bump(v("2.2.2"), Part::Minor));
+    }
+
+    #[test]
+    fn bump_patch() {
+        assert_eq!(v("0.1.3"), bump(v("0.1.2"), Part::Patch));
+        assert_eq!(v("2.2.3"), bump(v("2.2.2"), Part::Patch));
+    }
+
+    #[test]
+    fn borrow_and_owned() {
+        bump(v("0.2.2"), Part::Minor);
+        bump(&v("0.2.2"), Part::Minor);
+    }
+
+    #[test]
     fn keep_pre() {
         assert_eq!(v("1.3.0-alpha").to_string(), next_minor("1.2.5-alpha"))
     }
