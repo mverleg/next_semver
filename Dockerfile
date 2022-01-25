@@ -28,9 +28,11 @@ ARG BIN=next_semver
 ENV PATH=/
 ENV RUST_BACKTRACE=1
 ENV RUST_LOG='warn'
+ENV ROCKET_ADDRESS="0.0.0.0"
+ENV ROCKET_PORT=8080
 WORKDIR /code
 
 COPY --from=build /"$BIN" /"$BIN"
 
-ENTRYPOINT ["$BIN"]
+ENTRYPOINT ["next_semver"]
 
