@@ -3,51 +3,51 @@ apiVersion: apps/v1
 kind: Deployment
 # This describes the actual deployment:
 metadata:
-  name: next_semver-deployment
+  name: next-semver-deployment
   labels:
-    app: next_semver
+    app: next-semver
 spec:
   replicas: 1
   template:
     # This describes what pods to create:
     metadata:
       labels:
-        app: next_semver
+        app: next-semver
     spec:
       containers:
-          - name: next_semver-pod
+          - name: next-semver-pod
             image: "mverleg/next_semver:latest"
             imagePullPolicy: Always
   # This describes which pods are part of the deployment,
   # so this should match 'metadata' in almost all cases:
   selector:
     matchLabels:
-      app: next_semver
+      app: next-semver
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: next_semver-service
+  name: next-semver-service
   labels:
-    app: next_semver
+    app: next-semver
 spec:
   type: ClusterIP
   ports:
     # port of pod to contact
-    - targetPort: 80
+    - targetPort: 8080
       # within the cluster (ClusterIP is inside-only)
       port: 8080
   selector:
-    app: next_semver
+    app: next-semver
 
 ---
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: next_semver-service
+  name: next-semver-service
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -74,6 +74,6 @@ spec:
               pathType: Prefix
               backend:
                 service:
-                  name: next_semver-service
+                  name: next-semver-service
                   port:
                     number: 8080
