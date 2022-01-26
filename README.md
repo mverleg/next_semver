@@ -11,16 +11,20 @@ I have this as a http endpoint to keep my CI pipelines code-free.
 
 No guarantees about uptime, but I intend to have the service mostly available at [next.tryin.top](https://next.tryin.top). Example:
 
-    curl https://next.tryin.top/minor/v1.2.4
+    curl -f https://next.tryin.top/minor/v1.2.4
     # 1.3.0
 
 ## Run locally
 
-You can run with just Docker (the image is 2MB):
+You can run with just Docker ([the image](https://hub.docker.com/repository/docker/mverleg/next_semver) is 2MB):
 
     docker run -p8080:8080 -it mverleg/next_semver:latest
 
 Or you can build it yourself with Cargo, after checking out the code:
 
     ROCKET_ADDRESS="0.0.0.0" ROCKET_PORT=8080 cargo run --features=web --bin next_semver    
+
+## Crate
+
+The crate is available as [next_semver](https://crates.io/crates/next_semver) and can be used as a library (without web dependencies).
 
