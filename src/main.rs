@@ -109,55 +109,55 @@ fn next_prefix(part: BumpPart, version: PrefixBumpVersion) -> String {
 
 #[get("/<part>/<_>", rank = 3)]
 fn part_err(part: &str) -> status::BadRequest<String> {
-    status::BadRequest(Some(format!(
+    status::BadRequest(format!(
         "cannot parse part (first part of path): '{}' \
         should be one of 'major', 'minor' or 'patch'",
         part
-    )))
+    ))
 }
 
 #[get("/<_>/<version>", rank = 4)]
 fn version_err(version: &str) -> status::BadRequest<String> {
-    status::BadRequest(Some(format!(
+    status::BadRequest(format!(
         "cannot parse version (second part of path): '{}' \
         should be a semver, e.g. '1.2.4'",
         version
-    )))
+    ))
 }
 
 #[get("/<_>/<_>/<_>")]
 fn three_parts() -> status::BadRequest<String> {
-    status::BadRequest(Some(
+    status::BadRequest(
         "path too long, expected two parts, e.g. /major/1.2.4 or /patch/0.2.0".to_owned(),
-    ))
+    )
 }
 
 //TODO: there's probably a better way for this?
 #[get("/<_>/<_>/<_>/<_>")]
 fn four_parts() -> status::BadRequest<String> {
-    status::BadRequest(Some(
+    status::BadRequest(
         "path too long, expected two parts, e.g. /major/1.2.4 or /patch/0.2.0".to_owned(),
-    ))
+    )
 }
 
 #[get("/<param>")]
 fn missing_part(param: &str) -> status::BadRequest<String> {
-    status::BadRequest(Some(format!(
+    status::BadRequest(format!(
         "found only one path part ('{}'), expected two \
         parts, e.g. /major/1.2.4 or /patch/0.2.0",
         param
-    )))
+    ))
 }
 
 #[get("/")]
 fn fallback() -> status::BadRequest<String> {
-    status::BadRequest(Some(
+    status::BadRequest(
         ("Welcome to next_semver! This service gives you \
     bumped version numbers. Are you on version 1.2.5 and have a new feature? Request \
     /minor/1.2.5 and you get your next version: 1.3.0. It is extremely simple. First path \
     part is major, minor or patch, second part is the current semantic version.")
             .to_owned(),
-    ))
+    )
 }
 
 #[launch]
