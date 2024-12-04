@@ -97,17 +97,26 @@ impl<'a> FromParam<'a> for PrefixBumpVersion {
     }
 }
 
-#[get("/<part>/<version>", rank = 1)]
+#[get("/json/<version>", rank = 1)]
+fn next_json(version: BumpVersion) -> String {
+    let version = version.into();
+    let major = bump(&version, BumpPart::Major.into()).to_string();
+    let minor = bump(&version, BumpPart::Minor.into()).to_string();
+    let patch = bump(&version, BumpPart::Patch.into()).to_string();
+    format!("{{\"major\":\"{}\",\"minor\":\"{}\",\"patch\":\"{}\"}}", major, minor, patch)
+}
+
+#[get("/<part>/<version>", rank = 2)]
 fn next(part: BumpPart, version: BumpVersion) -> String {
     bump(&version.into(), part.into()).to_string()
 }
 
-#[get("/<part>/<version>", rank = 2)]
+#[get("/<part>/<version>", rank = 3)]
 fn next_prefix(part: BumpPart, version: PrefixBumpVersion) -> String {
     bump(&version.into(), part.into()).to_string()
 }
 
-#[get("/<part>/<_>", rank = 3)]
+#[get("/<part>/<_>", rank = 4)]
 fn part_err(part: &str) -> status::BadRequest<String> {
     status::BadRequest(format!(
         "cannot parse part (first part of path): '{}' \
@@ -116,7 +125,7 @@ fn part_err(part: &str) -> status::BadRequest<String> {
     ))
 }
 
-#[get("/<_>/<version>", rank = 4)]
+#[get("/<_>/<version>", rank = 5)]
 fn version_err(version: &str) -> status::BadRequest<String> {
     status::BadRequest(format!(
         "cannot parse version (second part of path): '{}' \
@@ -166,6 +175,7 @@ fn rocket() -> Rocket<Build> {
     rocket::build().mount(
         "/",
         routes![
+            next_json,
             next,
             next_prefix,
             part_err,
