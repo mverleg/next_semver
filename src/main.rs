@@ -164,7 +164,8 @@ fn fallback() -> status::BadRequest<String> {
         ("Welcome to next_semver! This service gives you \
     bumped version numbers. Are you on version 1.2.5 and have a new feature? Request \
     /minor/1.2.5 and you get your next version: 1.3.0. It is extremely simple. First path \
-    part is major, minor or patch, second part is the current semantic version.")
+    part is major, minor or patch, second part is the current semantic version. \
+    There is /json/2.4.1 to get all 3 bumped versions as json.")
             .to_owned(),
     )
 }

@@ -1,5 +1,5 @@
 
-FROM mverleg/rust_nightly_musl_base:nodeps_2024-05-01_45 AS build
+FROM mverleg/rust_nightly_musl_base:nodeps_2024-12-04_47 AS build
 
 ARG BIN=next_semver
 
