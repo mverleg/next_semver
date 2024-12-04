@@ -9,7 +9,7 @@ I have this as a http endpoint to keep my CI pipelines code-free.
 
 ## Webservice
 
-No guarantees about uptime, but I intend to have the service mostly available at [next.tryin.top](https://next.tryin.top). Example:
+No guarantees about uptime, but I intend to have the service occasionally available at [next.tryin.top](https://next.tryin.top). Example:
 
     curl -f https://next.tryin.top/minor/v1.2.4
     # 1.3.0
