@@ -106,13 +106,15 @@ fn next_json(version: BumpVersion) -> String {
 }
 
 #[get("/<part>/<version>", rank = 2)]
+#[allow(clippy::needless_borrows_for_generic_args)]
 fn next(part: BumpPart, version: BumpVersion) -> String {
-    bump(version.into(), part.into()).to_string()
+    bump(&version.into(), part.into()).to_string()
 }
 
 #[get("/<part>/<version>", rank = 3)]
+#[allow(clippy::needless_borrows_for_generic_args)]
 fn next_prefix(part: BumpPart, version: PrefixBumpVersion) -> String {
-    bump(version.into(), part.into()).to_string()
+    bump(&version.into(), part.into()).to_string()
 }
 
 #[get("/<part>/<_>", rank = 4)]
