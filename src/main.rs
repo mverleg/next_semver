@@ -102,7 +102,7 @@ fn next_json(version: BumpVersion) -> String {
     let major = bump(&version, BumpPart::Major.into()).to_string();
     let minor = bump(&version, BumpPart::Minor.into()).to_string();
     let patch = bump(&version, BumpPart::Patch.into()).to_string();
-    format!("{{\"major\":\"{}\",\"minor\":\"{}\",\"patch\":\"{}\"}}", major, minor, patch)
+    format!("{{\"current\":\"{}\",\"major\":\"{}\",\"minor\":\"{}\",\"patch\":\"{}\"}}", version, major, minor, patch)
 }
 
 #[get("/<part>/<version>", rank = 2)]
