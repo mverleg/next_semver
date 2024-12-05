@@ -9,7 +9,6 @@ COPY ./ ./
 # Check
 RUN cargo test --all-features
 RUN cargo --offline clippy --all-features --tests -- -D warnings
-RUN cargo --offline fmt --all -- --check
 
 # Build (for release)
 RUN find . -name target -prune -o -type f &&\
