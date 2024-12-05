@@ -1,6 +1,6 @@
 [package]
 name = "next_semver"
-version = "1.0.0"
+version = "1.1.0"
 description = "Send your current version and the type of bump you want, and you get back the new version. As webpage or as library."
 edition = "2021"
 publish = true
