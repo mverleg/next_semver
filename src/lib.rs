@@ -61,7 +61,7 @@ mod tests {
     #[test]
     fn borrow_and_owned() {
         bump(v("0.2.2"), Part::Minor);
-        bump(&v("0.2.2"), Part::Minor);
+        bump(v("0.2.2"), Part::Minor);
     }
 
     #[test]
