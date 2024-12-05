@@ -16,7 +16,7 @@ path = "src/main.rs"
 required-features = ["web"]
 
 [features]
-web = ["rocket"]
+web = ["rocket", "jemallocator"]
 
 [dependencies]
 rocket = { version = "0.5.1", optional = true }

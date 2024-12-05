@@ -12,7 +12,6 @@ use ::semver::Version;
 use ::next_semver::bump;
 use ::next_semver::Part;
 
-#[cfg(feature = "jemalloc")]
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 
