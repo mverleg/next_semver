@@ -10,12 +10,6 @@ metadata:
     nginx.ingress.kubernetes.io/hsts: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/server-alias: "*.{{ .Values.domain }}"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($host = 'www.{{ .Values.domain }}' ) {
-        rewrite ^ https://{{ .Values.domain }}$request_uri permanent;
-      }
-      rewrite ^(.*)/index\.html?$ $1/ permanent;
-      rewrite ^((?:.*/)?[^./]*[^/])$ $1/ permanent;
 spec:
   tls:
     - hosts:
