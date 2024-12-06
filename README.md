@@ -32,10 +32,12 @@ The crate is available as [next_semver](https://crates.io/crates/next_semver) an
 
 To preview the generated yaml:
 
-    helm template --debug next-semver helm
+    helm template --debug -n next-semver next-semver helm
 
-To deploy
+To deploy:
 
-    helm install -n next-semver next-semver-name helm
+    helm install --create-namespace -n next-semver next-semver-name helm
 
-or `upgrade` if it is not the first time.
+or to upgrade:
+
+    helm upgrade -n next-semver next-semver-name helm
