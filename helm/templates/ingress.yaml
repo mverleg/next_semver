@@ -1,34 +1,35 @@
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
+namespace: {{ .Release.Namespace }}
 metadata:
-  name: next-semver-service
+  name: {{ .Release.Name }}-service
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/hsts: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/server-alias: "*.next.tryin.top"
+    nginx.ingress.kubernetes.io/server-alias: "*.{{ .Values.domain }}"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      if ($host = 'www.next.tryin.top' ) {
-        rewrite ^ https://next.tryin.top$request_uri permanent;
+      if ($host = 'www.{{ .Values.domain }}' ) {
+        rewrite ^ https://{{ .Values.domain }}$request_uri permanent;
       }
       rewrite ^(.*)/index\.html?$ $1/ permanent;
       rewrite ^((?:.*/)?[^./]*[^/])$ $1/ permanent;
 spec:
   tls:
     - hosts:
-        - next.tryin.top
-        - www.next.tryin.top
+        - {{ .Values.domain }}
+        - www.{{ .Values.domain }}
       secretName: next-tryin-top-tls
   rules:
-      - host: next.tryin.top
+      - host: {{ .Values.domain }}
         http:
           paths:
             - path: /
               pathType: Prefix
               backend:
                 service:
-                  name: next-semver-service
+                  name: {{ .Release.Name }}-service
                   port:
                     number: 8080

@@ -1,25 +1,27 @@
 
 apiVersion: apps/v1
 kind: Deployment
+namespace: {{ .Release.Namespace }}
 # This describes the actual deployment:
 metadata:
-  name: next-semver-deployment
+  name: {{ .Release.Name }}-deployment
   labels:
-    app: next-semver
+    app: {{ .Release.Name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     # This describes what pods to create:
     metadata:
       labels:
-        app: next-semver
+        app: {{ .Release.Name }}
     spec:
       containers:
-          - name: next-semver-pod
-            image: "mverleg/next_semver:latest"
+          - name: {{ .Release.Name }}-pod
+            image: "mverleg/next_semver:{{ .Values.image_tag }}"
             imagePullPolicy: Always
   # This describes which pods are part of the deployment,
   # so this should match 'metadata' in almost all cases:
   selector:
     matchLabels:
-      app: next-semver
+      app: {{ .Release.Name }}
+

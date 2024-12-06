@@ -1,0 +1,7 @@
+
+# Release.Name
+# Release.Namespace
+domain: "next.tryin.top"
+replicaCount: 2
+image_tag: "latest"
+

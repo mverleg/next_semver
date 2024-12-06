@@ -1,10 +1,11 @@
 
 apiVersion: v1
 kind: Service
+namespace: {{ .Release.Namespace }}
 metadata:
-  name: next-semver-service
+  name: {{ .Release.Name }}-service
   labels:
-    app: next-semver
+    app: {{ .Release.Name }}
 spec:
   type: ClusterIP
   ports:
@@ -13,4 +14,4 @@ spec:
       # within the cluster (ClusterIP is inside-only)
       port: 8080
   selector:
-    app: next-semver
+    app: {{ .Release.Name }}
