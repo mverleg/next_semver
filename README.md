@@ -36,6 +36,6 @@ To preview the generated yaml:
 
 To deploy
 
-    helm install next-semver-name helm
+    helm install -n next-semver next-semver-name helm
 
 or `upgrade` if it is not the first time.
