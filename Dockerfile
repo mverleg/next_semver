@@ -33,5 +33,7 @@ WORKDIR /code
 
 COPY --from=build /"$BIN" /"$BIN"
 
+EXPOSE 8080
+
 ENTRYPOINT ["next_semver"]
 

@@ -16,11 +16,24 @@ spec:
         app: {{ .Release.Name }}
     spec:
       containers:
-          - name: {{ .Release.Name }}-pod
-            image: "mverleg/next_semver:{{ .Values.image_tag }}"
-            imagePullPolicy: Always
-  # This describes which pods are part of the deployment,
-  # so this should match 'metadata' in almost all cases:
+      - name: {{ .Release.Name }}-pod
+        image: "mverleg/next_semver:{{ .Values.image_tag }}"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "2000m"
+        livenessProbe:
+          httpGet:
+            path: /json/1.2.3
+            port: 8080
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+  # this should match 'metadata':
   selector:
     matchLabels:
       app: {{ .Release.Name }}
