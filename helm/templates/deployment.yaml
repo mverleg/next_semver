@@ -1,0 +1,25 @@
+
+apiVersion: apps/v1
+kind: Deployment
+# This describes the actual deployment:
+metadata:
+  name: next-semver-deployment
+  labels:
+    app: next-semver
+spec:
+  replicas: 1
+  template:
+    # This describes what pods to create:
+    metadata:
+      labels:
+        app: next-semver
+    spec:
+      containers:
+          - name: next-semver-pod
+            image: "mverleg/next_semver:latest"
+            imagePullPolicy: Always
+  # This describes which pods are part of the deployment,
+  # so this should match 'metadata' in almost all cases:
+  selector:
+    matchLabels:
+      app: next-semver
