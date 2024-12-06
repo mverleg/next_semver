@@ -28,3 +28,14 @@ Or you can build it yourself with Cargo, after checking out the code:
 
 The crate is available as [next_semver](https://crates.io/crates/next_semver) and can be used as a library (without web dependencies).
 
+## Deploy
+
+To preview the generated yaml:
+
+    helm template --debug next-semver helm
+
+To deploy
+
+    helm install next-semver-name helm
+
+or `upgrade` if it is not the first time.

@@ -1,10 +1,9 @@
 
 apiVersion: apps/v1
 kind: Deployment
-namespace: {{ .Release.Namespace }}
-# This describes the actual deployment:
 metadata:
   name: {{ .Release.Name }}-deployment
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Release.Name }}
 spec:
