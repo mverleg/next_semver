@@ -11,6 +11,6 @@ spec:
     # port of pod to contact
     - targetPort: 8080
       # within the cluster (ClusterIP is inside-only)
-      port: 8080
+      port: 80
   selector:
     app: {{ .Release.Name }}
