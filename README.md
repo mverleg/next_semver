@@ -36,8 +36,8 @@ To preview the generated yaml:
 
 To deploy:
 
-    helm install --create-namespace -n next-semver next-semver-name helm
+    helm install --create-namespace -n next-semver next-semver helm
 
 or to upgrade:
 
-    helm upgrade -n next-semver next-semver-name helm
+    helm upgrade -n next-semver next-semver helm
