@@ -162,11 +162,11 @@ fn missing_part(param: &str) -> status::BadRequest<String> {
 #[get("/")]
 fn fallback() -> status::BadRequest<String> {
     status::BadRequest(
-        ("<h1>Welcome to next_semver!</h1><p>This service gives you \
+        ("Welcome to next_semver! This service gives you \
     bumped version numbers. Are you on version 1.2.5 and have a new feature? Request \
-    <a href='/minor/1.2.5'>/minor/1.2.5</a> and you get your next version: 1.3.0. It is extremely simple. First path \
+    /minor/1.2.5 and you get your next version: 1.3.0. It is extremely simple. First path \
     part is major, minor or patch, second part is the current semantic version. \
-    There is <a href='/json/2.4.1'>/json/2.4.1</a> to get all 3 bumped versions as json.</p>")
+    There is /json/2.4.1 to get all 3 bumped versions as json.")
             .to_owned(),
     )
 }
