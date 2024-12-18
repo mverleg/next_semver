@@ -1,16 +1,17 @@
 use ::std::fmt;
 
+use ::next_semver::bump;
+use ::next_semver::Part;
 use ::rocket::get;
 use ::rocket::launch;
 use ::rocket::request::FromParam;
+use ::rocket::response::content;
 use ::rocket::response::status;
 use ::rocket::routes;
 use ::rocket::Build;
 use ::rocket::Rocket;
 use ::semver::Version;
-
-use ::next_semver::bump;
-use ::next_semver::Part;
+use rocket::response::content::RawJson;
 
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
@@ -97,12 +98,13 @@ impl<'a> FromParam<'a> for PrefixBumpVersion {
 }
 
 #[get("/json/<version>", rank = 1)]
-fn next_json(version: BumpVersion) -> String {
+fn next_json(version: BumpVersion) -> RawJson<String> {
     let version = version.into();
     let major = bump(&version, BumpPart::Major.into()).to_string();
     let minor = bump(&version, BumpPart::Minor.into()).to_string();
     let patch = bump(&version, BumpPart::Patch.into()).to_string();
-    format!("{{\"current\":\"{}\",\"major\":\"{}\",\"minor\":\"{}\",\"patch\":\"{}\"}}\n", version, major, minor, patch)
+    let json_txt = format!("{{\"current\":\"{}\",\"major\":\"{}\",\"minor\":\"{}\",\"patch\":\"{}\"}}\n", version, major, minor, patch);
+    content::RawJson(json_txt)
 }
 
 #[get("/<part>/<version>", rank = 2)]
