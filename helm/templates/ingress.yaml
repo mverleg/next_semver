@@ -1,25 +1,26 @@
 
+{{ .Values.prod | required '.Values.prod required' }}
+{{ .Values.domain | required '.Values.domain required' }}
+
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-ingress
-  labels:
-    - domain: "{{- $domain := .Values.domain | required '.Values.domain is required.' -}}"
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: true
     nginx.ingress.kubernetes.io/hsts: true
     cert-manager.io/cluster-issuer: {{ ternary "letsencrypt-prod" "letsencrypt-staging" .Values.prod }}
-    nginx.ingress.kubernetes.io/server-alias: "*.{{ $domain }}"
+    nginx.ingress.kubernetes.io/server-alias: "*.{{ .Values.domain }}"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - {{ $domain }}
-        - www.{{ $domain }}
+        - {{ .Values.domain }}
+        - www.{{ .Values.domain }}
       secretName: {{ .Release.Name }}-tls
   rules:
-      - host: {{ $domain }}
+      - host: {{ .Values.domain }}
         http:
           paths:
             - path: /
