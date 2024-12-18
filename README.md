@@ -37,9 +37,9 @@ To preview the generated yaml:
 To deploy or upgrade:
 
     # dev
-    helmi -n next-semver --set 'prod=false,domain=next-dev.tryin.top' next-semver-dev helm
+    helmi -n next-semver --set prod=false --set 'domain=next-dev.tryin.top' next-semver-dev helm
 
     # prod
-    helmi -n next-semver --set 'prod=true,domain=next.tryin.top' next-semver helm
+    helmi -n next-semver --set prod=true --set 'domain=next.tryin.top' next-semver helm
 
 
