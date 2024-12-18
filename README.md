@@ -34,10 +34,12 @@ To preview the generated yaml:
 
     helm template --debug -n next-semver next-semver helm
 
-To deploy:
+To deploy or upgrade:
 
-    helm install --create-namespace -n next-semver next-semver helm
+    # dev
+    helmi -n next-semver --set prod=false next-semver-dev helm
 
-or to upgrade:
+    # prod
+    helmi -n next-semver --set prod=true next-semver helm
 
-    helm upgrade -n next-semver next-semver helm
+
