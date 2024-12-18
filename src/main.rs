@@ -121,7 +121,7 @@ fn next_prefix(part: BumpPart, version: PrefixBumpVersion) -> String {
 fn part_err(part: &str) -> status::BadRequest<String> {
     status::BadRequest(format!(
         "cannot parse part (first part of path): '{}' \
-        should be one of 'major', 'minor' or 'patch'",
+        should be one of 'major', 'minor' or 'patch'\n",
         part
     ))
 }
@@ -130,7 +130,7 @@ fn part_err(part: &str) -> status::BadRequest<String> {
 fn version_err(version: &str) -> status::BadRequest<String> {
     status::BadRequest(format!(
         "cannot parse version (second part of path): '{}' \
-        should be a semver, e.g. '1.2.4'",
+        should be a semver, e.g. '1.2.4'\n",
         version
     ))
 }
@@ -138,7 +138,7 @@ fn version_err(version: &str) -> status::BadRequest<String> {
 #[get("/<_>/<_>/<_>")]
 fn three_parts() -> status::BadRequest<String> {
     status::BadRequest(
-        "path too long, expected two parts, e.g. /major/1.2.4 or /patch/0.2.0".to_owned(),
+        "path too long, expected two parts, e.g. /major/1.2.4 or /patch/0.2.0\n".to_owned(),
     )
 }
 
@@ -146,7 +146,7 @@ fn three_parts() -> status::BadRequest<String> {
 #[get("/<_>/<_>/<_>/<_>")]
 fn four_parts() -> status::BadRequest<String> {
     status::BadRequest(
-        "path too long, expected two parts, e.g. /major/1.2.4 or /patch/0.2.0".to_owned(),
+        "path too long, expected two parts, e.g. /major/1.2.4 or /patch/0.2.0\n".to_owned(),
     )
 }
 
@@ -154,7 +154,7 @@ fn four_parts() -> status::BadRequest<String> {
 fn missing_part(param: &str) -> status::BadRequest<String> {
     status::BadRequest(format!(
         "found only one path part ('{}'), expected two \
-        parts, e.g. /major/1.2.4 or /patch/0.2.0",
+        parts, e.g. /major/1.2.4 or /patch/0.2.0\n",
         param
     ))
 }
@@ -166,7 +166,7 @@ fn fallback() -> status::BadRequest<String> {
     bumped version numbers. Are you on version 1.2.5 and have a new feature? Request \
     /minor/1.2.5 and you get your next version: 1.3.0. It is extremely simple. First path \
     part is major, minor or patch, second part is the current semantic version. \
-    There is /json/2.4.1 to get all 3 bumped versions as json.")
+    There is /json/2.4.1 to get all 3 bumped versions as json.\n")
             .to_owned(),
     )
 }

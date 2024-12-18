@@ -20,10 +20,10 @@ web = ["rocket", "jemallocator"]
 
 [dependencies]
 rocket = { version = "0.5.1", optional = true }
-semver = "1.0.23"
+semver = "1.0.24"
 
 [target.'cfg(not(target_env = "msvc"))'.dependencies]
-jemallocator = { version = "0.3.2", optional = true }
+jemallocator = { version = "0.5.4", optional = true }
 
 [profile.release]
 lto = "thin"
