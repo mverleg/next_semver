@@ -1,9 +1,14 @@
 
 {{ if not .Values.prod }}
 
+#TODO @mark: turn this into some reusable service
+
 {{ $self := printf "timebomb-ns-%s" .Release.Namespace | trunc 63 | lower }}
-{{ $currentDay := (now | date "2") }}
-{{ $cleanupDay := mod (add $currentDay 3) 7 }}
+{{ $currentDate := now | dateModify "+72h" | date "2006-01-02" }}
+{{ $currentDay := int (substr 8 10 $currentDate) }}
+{{ $currentMonth := int (substr 5 7 $currentDate) }}
+{{ $cleanupDay := mod (add $currentDay 3) 29 }}
+{{ $cleanupMonth := ternary $currentMonth (add 1 (mod (add $currentMonth 1) 13)) (le $currentDay 25) }}
 
 apiVersion: batch/v1
 kind: CronJob
@@ -11,10 +16,12 @@ metadata:
   name: {{ $self | quote }}
   namespace: cleaners
   labels:
-    start_dow: {{ $currentDay | quote }}
-    clean_dow: {{ $cleanupDay | quote }}
+    start_day: {{ $currentDay | quote }}
+    start_month: {{ $currentMonth | quote }}
+    clean_day: {{ $cleanupDay | quote }}
+    clean_month: {{ $cleanupMonth | quote }}
 spec:
-  schedule: "0 3 * * {{ $cleanupDay }}"
+  schedule: "0 3 {{ $cleanupDay }} {{ $cleanupMonth }} *"
   jobTemplate:
     spec:
       template:
@@ -29,7 +36,7 @@ spec:
                 - |
                   echo "Deleting namespace {{ .Release.Namespace }}";
                   kubectl delete namespace {{ .Release.Namespace }};
-                  echo "Removing this cron"
+                  echo "Removing the cronjob that spawned this"
                   kubectl delete cronjob {{ $self | quote }}
               resources:
                 requests:
