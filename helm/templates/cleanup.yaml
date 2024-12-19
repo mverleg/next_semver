@@ -1,31 +1,31 @@
 
 {{ if not .Values.prod }}
 
+{{ $self := printf "timebomb-ns-%s" .Release.Namespace | trunc 63 | lower }}
+{{ $currentDay := (date "1" (now | date "Mon")) }}
+{{ $cleanupDay := mod (add $currentDay 3) 7 }}
+
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
-  name: timebomb-ns-{{ .Release.Namespace }}
+  name: {{ $self | quote }}
   namespace: cleaners
 spec:
-  template:
+  schedule: "0 3 * * {{ $cleanupDay }}"
+  jobTemplate:
     spec:
-      # this account needs to be created once
+      # this account needs to be created
       serviceAccountName: cleanup-account
       restartPolicy: Never
       containers:
-        - name: timebomb-ns-{{ .Release.Namespace }}
+        - name: {{ $self | quote }}
           image: bitnami/kubectl:latest
           command:
-            - /bin/sh
-            - -c
             - |
-              for i in {1..72}
-              do
-                  echo "$(date): hour $i until deletion of namespace {{ .Release.Namespace }}"
-                  sleep 3600
-              done
-              echo "Deleting namespace {{ .Release.Namespace }} NOW";
+              echo "Deleting namespace {{ .Release.Namespace }}";
               kubectl delete namespace {{ .Release.Namespace }};
+              echo "Removing this cron"
+              kubectl delete cronjob {{ $self | quote }}
           resources:
             requests:
               memory: "32Mi"
