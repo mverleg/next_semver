@@ -6,9 +6,7 @@
 {{ $self := printf "timebomb-ns-%s" .Release.Namespace | trunc 63 | lower }}
 {{ $currentDate := now | dateModify "+72h" | date "2006-01-02" }}
 {{ $currentDay := int (substr 8 10 $currentDate) }}
-{{ $currentMonth := int (substr 5 7 $currentDate) }}
 {{ $cleanupDay := mod (add $currentDay 3) 29 }}
-{{ $cleanupMonth := ternary $currentMonth (add 1 (mod (add $currentMonth 1) 13)) (le $currentDay 25) }}
 
 apiVersion: batch/v1
 kind: CronJob
@@ -17,11 +15,9 @@ metadata:
   namespace: cleaners
   labels:
     start_day: {{ $currentDay | quote }}
-    start_month: {{ $currentMonth | quote }}
     clean_day: {{ $cleanupDay | quote }}
-    clean_month: {{ $cleanupMonth | quote }}
 spec:
-  schedule: "0 3 {{ $cleanupDay }} {{ $cleanupMonth }} *"
+  schedule: "0 3 {{ $cleanupDay }} * *"
   jobTemplate:
     spec:
       template:
