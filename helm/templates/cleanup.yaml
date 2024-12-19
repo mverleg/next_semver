@@ -2,7 +2,7 @@
 {{ if not .Values.prod }}
 
 {{ $self := printf "timebomb-ns-%s" .Release.Namespace | trunc 63 | lower }}
-{{ $currentDay := (date "1" (now | date "Mon")) }}
+{{ $currentDay := (now | date "2") }}
 {{ $cleanupDay := mod (add $currentDay 3) 7 }}
 
 apiVersion: batch/v1
@@ -10,27 +10,32 @@ kind: CronJob
 metadata:
   name: {{ $self | quote }}
   namespace: cleaners
+  labels:
+    start_dow: {{ $currentDay | quote }}
+    clean_dow: {{ $cleanupDay | quote }}
 spec:
   schedule: "0 3 * * {{ $cleanupDay }}"
   jobTemplate:
     spec:
-      # this account needs to be created
-      serviceAccountName: cleanup-account
-      restartPolicy: Never
-      containers:
-        - name: {{ $self | quote }}
-          image: bitnami/kubectl:latest
-          command:
-            - |
-              echo "Deleting namespace {{ .Release.Namespace }}";
-              kubectl delete namespace {{ .Release.Namespace }};
-              echo "Removing this cron"
-              kubectl delete cronjob {{ $self | quote }}
-          resources:
-            requests:
-              memory: "32Mi"
-              cpu: "100m"
-            limits:
-              memory: "64Mi"
-              cpu: "100m"
+      template:
+        spec:
+          # this account needs to be created
+          serviceAccountName: cleanup-account
+          restartPolicy: Never
+          containers:
+            - name: {{ $self | quote }}
+              image: bitnami/kubectl:latest
+              command:
+                - |
+                  echo "Deleting namespace {{ .Release.Namespace }}";
+                  kubectl delete namespace {{ .Release.Namespace }};
+                  echo "Removing this cron"
+                  kubectl delete cronjob {{ $self | quote }}
+              resources:
+                requests:
+                  memory: "32Mi"
+                  cpu: "100m"
+                limits:
+                  memory: "64Mi"
+                  cpu: "100m"
 {{ end }}
