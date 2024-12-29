@@ -27,13 +27,10 @@ spec:
           restartPolicy: Never
           containers:
             - name: {{ $self | quote }}
-              image: bitnami/kubectl:latest
-              command:
-                - |
-                  echo "Deleting namespace {{ .Release.Namespace }}";
-                  kubectl delete namespace {{ .Release.Namespace }};
-                  echo "Removing the cronjob that spawned this"
-                  kubectl delete cronjob {{ $self | quote }}
+              image: mverleg/ns-timebomb:latest
+              args:
+                - {{ .Release.Namespace | quote }}
+                - {{ $self | quote }}
               resources:
                 requests:
                   memory: "32Mi"
