@@ -6,12 +6,12 @@ use ::rocket::get;
 use ::rocket::launch;
 use ::rocket::request::FromParam;
 use ::rocket::response::content;
+use ::rocket::response::content::RawJson;
 use ::rocket::response::status;
 use ::rocket::routes;
 use ::rocket::Build;
 use ::rocket::Rocket;
 use ::semver::Version;
-use rocket::response::content::RawJson;
 
 #[global_allocator]
 static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
